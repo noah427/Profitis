@@ -1,0 +1,26 @@
+{
+  "name": "profitis",
+  "version": "1.0.0",
+  "description": "Bot Invite : https://discordapp.com/api/oauth2/authorize?client_id=694298808208851095&permissions=66624&scope=bot",
+  "main": "index.js",
+  "dependencies": {
+    "discord.js": "^12.1.1",
+    "dotenv": "^8.2.0",
+    "klasa": "^0.5.0-dev",
+    "sqlite3": "^4.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/noah427/Profitis.git"
+  },
+  "author": "Noah427",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/noah427/Profitis/issues"
+  },
+  "homepage": "https://github.com/noah427/Profitis#readme"
+}
