@@ -14,6 +14,8 @@ module.exports = class extends Event {
       }
     });
     console.log("Bot started");
+
+    console.log(`Logged in as ${this.client.user.tag}`)
   }
 
   async init() {}

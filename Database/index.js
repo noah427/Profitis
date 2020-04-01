@@ -8,10 +8,16 @@ db.serialize(function() {
   // Create server worth table
 
   // Create user worth table
+
+  db.run(
+    "CREATE TABLE IF NOT EXISTS users (userID TEXT UNIQUE, userTag TEXT, balance INTEGER, shares TEXT)"
+  );
 });
 
-const addServerDB = db.prepare("INSERT INTO guilds (?,?,?,?,?,?)");
+const addServerDB = db.prepare("INSERT INTO guilds VALUES (?,?,?,?,?,?,?,?,?)");
 const serverTopDB = db.prepare("SELECT * FROM guilds ORDER BY guildValue DESC");
+const getUserDB = db.prepare("SELECT * FROM users WHERE userID = ?");
+const addUserDB = db.prepare("INSERT INTO users VALUES (?,?,?,?)");
 
 module.exports.addServer = (id, name, memberCount, ownerID) => {
   addServerDB.run(
@@ -31,4 +37,24 @@ module.exports.serverTop = cb => {
   serverTopDB.all(list => cb(list));
 };
 
-db.close();
+module.exports.addUser = (ID, tag) => {
+  addUserDB.run(String(ID), tag, 100, "");
+};
+
+// module.exports.giveUser = (id, tag, cb) => {
+//   this.getUser()
+// }
+
+module.exports.getUser = (id, tag, cb) => {
+  console.log("id given : ", id)
+  getUserDB.get(id, (err, res) => {
+    console.log(res)
+    if (!res) {
+      this.addUser(id, tag);
+      cb({ balance: 100 });
+    } else {
+      cb(res)
+    }
+  });
+};
+
