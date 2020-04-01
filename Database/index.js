@@ -52,10 +52,10 @@ module.exports.adminGive = (id, tag, amount, cb) => {
     const currentBalance = res.balance;
     const newBalance = currentBalance + amount;
 
-    console.log(newBalance, id, "   ", res.userID);
 
 
-    setUserDB.run(newBalance, console.log);
+
+    setUserDB.run(newBalance, id);
 
     cb(newBalance);
   });
@@ -63,9 +63,9 @@ module.exports.adminGive = (id, tag, amount, cb) => {
 
 module.exports.userBalanceSet = (id, tag, amount, cb) => {
   this.getUser(id, tag, res => {
-    setUserDB.run(amount);
+    setUserDB.run(amount, id);
 
-    cb(amount, console.log);
+    cb(amount);
   });
 };
 

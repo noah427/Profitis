@@ -21,6 +21,11 @@ module.exports = class extends Command {
   }
 
   async run(msg, [target, amount]) {
+    if(msg.author.id != 628298193922424857 && msg.author.id != 414602371621060629) {
+      msg.channel.send("you aren't a bot admin are you? sorry")
+      return
+    }
+
     adminGive(
       target.id,
       target.username + "#" + target.discriminator,
