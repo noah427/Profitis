@@ -1,5 +1,5 @@
 const { Command } = require("klasa");
-const db = require("../../Database/index");
+const {getUser} = require("../../Database/index");
 
 module.exports = class extends Command {
   constructor(...args) {
@@ -22,7 +22,7 @@ module.exports = class extends Command {
 
   async run(msg, [target]) {
     console.log(target, !!target)
-    db.getUser(
+    getUser(
       target ? target.id : msg.author.id,
       target ? target.username + target.discriminator : msg.author.tag,
       user => {

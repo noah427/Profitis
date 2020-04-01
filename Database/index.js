@@ -18,6 +18,7 @@ const addServerDB = db.prepare("INSERT INTO guilds VALUES (?,?,?,?,?,?,?,?,?)");
 const serverTopDB = db.prepare("SELECT * FROM guilds ORDER BY guildValue DESC");
 const getUserDB = db.prepare("SELECT * FROM users WHERE userID = ?");
 const addUserDB = db.prepare("INSERT INTO users VALUES (?,?,?,?)");
+const giveUserDB = db.prepare("UPDATE users SET balance = ? WHERE userID = ?");
 
 module.exports.addServer = (id, name, memberCount, ownerID) => {
   addServerDB.run(
@@ -41,20 +42,26 @@ module.exports.addUser = (ID, tag) => {
   addUserDB.run(String(ID), tag, 100, "");
 };
 
-// module.exports.giveUser = (id, tag, cb) => {
-//   this.getUser()
-// }
+module.exports.adminGive = (id, tag, amount, cb) => {
+  this.getUser(id, tag, res => {
+    const currentBalance = res.balance;
+    const newBalance = currentBalance + amount;
+
+    giveUserDB.run(newBalance);
+
+    cb(newBalance);
+  });
+};
 
 module.exports.getUser = (id, tag, cb) => {
-  console.log("id given : ", id)
+  console.log("id given : ", id);
   getUserDB.get(id, (err, res) => {
-    console.log(res)
+    console.log(res);
     if (!res) {
       this.addUser(id, tag);
       cb({ balance: 100 });
     } else {
-      cb(res)
+      cb(res);
     }
   });
 };
-
