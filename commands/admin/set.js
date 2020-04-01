@@ -8,7 +8,7 @@ module.exports = class extends Command {
       enabled: true,
       runIn: ["text", "dm", "group"],
       cooldown: 0,
-      aliases: [],
+      aliases: ["setbal", "balset"],
       permLevel: 0,
       botPerms: [],
       requiredSettings: [],
