@@ -10,13 +10,12 @@ module.exports = class extends Event {
       status: "dnd",
       activity: {
         type: "WATCHING",
-        name: "The stock market crash."
+        name: "The DOW Jones crash."
       }
     });
-    console.log("Bot started");
 
     console.log(`Logged in as ${this.client.user.tag}`)
-  }
+    }
 
   async init() {}
 };

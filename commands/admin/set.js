@@ -1,10 +1,10 @@
 const { Command } = require("klasa");
-const { adminGive } = require("../../Database/index");
+const { userBalanceSet } = require("../../Database/index");
 
 module.exports = class extends Command {
   constructor(...args) {
     super(...args, {
-      name: "give",
+      name: "setbalance",
       enabled: true,
       runIn: ["text", "dm", "group"],
       cooldown: 0,
@@ -12,16 +12,16 @@ module.exports = class extends Command {
       permLevel: 0,
       botPerms: [],
       requiredSettings: [],
-      description: "admin give command",
+      description: "admin set command",
       quotedStringSupport: false,
       usage: "<target:user> <amount:int>",
       usageDelim: " ",
-      extendedHelp: "Admin give command, only usable by admins"
+      extendedHelp: "Admin set command, only usable by admins"
     });
   }
 
   async run(msg, [target, amount]) {
-    adminGive(
+    userBalanceSet(
       target.id,
       target.username + "#" + target.discriminator,
       amount,

@@ -18,7 +18,8 @@ const addServerDB = db.prepare("INSERT INTO guilds VALUES (?,?,?,?,?,?,?,?,?)");
 const serverTopDB = db.prepare("SELECT * FROM guilds ORDER BY guildValue DESC");
 const getUserDB = db.prepare("SELECT * FROM users WHERE userID = ?");
 const addUserDB = db.prepare("INSERT INTO users VALUES (?,?,?,?)");
-const giveUserDB = db.prepare("UPDATE users SET balance = ? WHERE userID = ?");
+const setUserDB = db.prepare("UPDATE users SET balance = ? WHERE userID = ?");
+const userTopDB = db.prepare("SELECT * FROM users ORDER BY balance DESC");
 
 module.exports.addServer = (id, name, memberCount, ownerID) => {
   addServerDB.run(
@@ -42,21 +43,34 @@ module.exports.addUser = (ID, tag) => {
   addUserDB.run(String(ID), tag, 100, "");
 };
 
+module.exports.userTop = cb => {
+  userTopDB.all((err, list) => cb(list));
+};
+
 module.exports.adminGive = (id, tag, amount, cb) => {
   this.getUser(id, tag, res => {
     const currentBalance = res.balance;
     const newBalance = currentBalance + amount;
 
-    giveUserDB.run(newBalance);
+    console.log(newBalance, id, "   ", res.userID);
+
+
+    setUserDB.run(newBalance, console.log);
 
     cb(newBalance);
   });
 };
 
+module.exports.userBalanceSet = (id, tag, amount, cb) => {
+  this.getUser(id, tag, res => {
+    setUserDB.run(amount);
+
+    cb(amount, console.log);
+  });
+};
+
 module.exports.getUser = (id, tag, cb) => {
-  console.log("id given : ", id);
   getUserDB.get(id, (err, res) => {
-    console.log(res);
     if (!res) {
       this.addUser(id, tag);
       cb({ balance: 100 });

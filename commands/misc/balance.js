@@ -21,10 +21,9 @@ module.exports = class extends Command {
   }
 
   async run(msg, [target]) {
-    console.log(target, !!target)
     getUser(
       target ? target.id : msg.author.id,
-      target ? target.username + target.discriminator : msg.author.tag,
+      target ? target.username +"#" +  target.discriminator : msg.author.tag,
       user => {
         msg.channel.send(
           `${target ? target.username + "'s" : "Your"} balance is : ${

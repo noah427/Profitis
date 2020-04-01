@@ -15,4 +15,3 @@ var Klient = new Client({
 // run evaluation tasks on servers
 
 Klient.login(process.env.TOKEN);
-
