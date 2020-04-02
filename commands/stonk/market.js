@@ -1,5 +1,6 @@
 const { Command } = require("klasa");
-const { getUser } = require("../../Database/index");
+const { marketDownload } = require("../../Database/index");
+const { MessageEmbed } = require("discord.js");
 
 module.exports = class extends Command {
   constructor(...args) {
@@ -21,10 +22,33 @@ module.exports = class extends Command {
   }
 
   async run(msg) {
-      
+    marketDownload(res => {
+      msg.channel.send(makeViewEmbed(res));
+    });
   }
 
   async init() {
     // You can optionally define this method which will be run when the bot starts (after login, so discord data is available via this.client)
   }
 };
+
+function makeViewEmbed(list) {
+  let embed = new MessageEmbed();
+
+  embed.setTitle("PROFITIS : Market View ");
+
+
+  for (row of list) {
+    // console.log(row);
+    embed.addField(
+      `${row.amount} shares of ${row.serverName} ${
+        row.owned ? "owned by " + row.ownerTag : ""
+      }`,
+      `Market price : ${row.price}`
+    );
+  }
+
+  embed.setFooter(`___ Owned stocks, ___ Unowned stocks`);
+
+  return embed;
+}
