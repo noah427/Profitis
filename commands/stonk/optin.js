@@ -1,5 +1,9 @@
 const { Command } = require("klasa");
-const { getUser, addSharesToUser } = require("../../Database/index");
+const {
+  getUser,
+  addSharesToUser,
+  marketDownload
+} = require("../../Database/index");
 
 module.exports = class extends Command {
   constructor(...args) {
@@ -27,25 +31,23 @@ module.exports = class extends Command {
       );
       return;
     }
-    getUser(msg.author.id, msg.author.tag, result => {
-      for (let row of JSON.parse(result.shares)) {
-        if (row.serverID === msg.guild.id) {
-          msg.channel.send("You may not opt in more than once");
+    marketDownload(result => {
+      for (var row of result) {
+        if (
+          row.serverName === msg.guild.name &&
+          row.ownerID === msg.author.id
+        ) {
+          msg.channel.send("You can't optin more than once");
           return;
         }
       }
 
-      addSharesToUser(
-        msg.author.id,
-        msg.author.tag,
-        {
-          serverID: msg.guild.id,
-          price: 2,
-          amount: 100,
-          serverName: msg.guild.name
-        },
-        newShares => {}
-      );
+      addSharesToUser(msg.author.id, msg.author.tag, {
+        serverID: msg.guild.id,
+        price: 2,
+        amount: 100,
+        serverName: msg.guild.name
+      });
 
       msg.channel.send(
         "You have opted your server into the game, try the $inventory command to see your stocks"

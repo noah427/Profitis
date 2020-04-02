@@ -13,7 +13,7 @@ module.exports = class extends Command {
       permLevel: 0,
       botPerms: [],
       requiredSettings: [],
-      description: "view your inventory of stocks",
+      description: "view the market for trading stocks",
       quotedStringSupport: false,
       usage: "", // add sorting later??
       usageDelim: " ",
@@ -37,18 +37,25 @@ function makeViewEmbed(list) {
 
   embed.setTitle("PROFITIS : Market View ");
 
+  var forSale = 0;
 
   for (row of list) {
     // console.log(row);
     embed.addField(
       `${row.amount} shares of ${row.serverName} ${
-        row.owned ? "owned by " + row.ownerTag : ""
+        row.forSale
+          ? "owned by " + row.ownerTag
+          : "for sale from " + row.ownerTag
       }`,
       `Market price : ${row.price}`
     );
+
+    console.log(row)
+
+    row.owned ? undefined : forSale++;
   }
 
-  embed.setFooter(`___ Owned stocks, ___ Unowned stocks`);
+  embed.setFooter(`${forSale} stocks for sale`);
 
   return embed;
 }

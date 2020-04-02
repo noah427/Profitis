@@ -1,5 +1,5 @@
 const { Command } = require("klasa");
-const { getUser } = require("../../Database/index");
+const { marketDownload } = require("../../Database/index");
 const { MessageEmbed } = require("discord.js");
 
 module.exports = class extends Command {
@@ -22,8 +22,12 @@ module.exports = class extends Command {
   }
 
   async run(msg) {
-    getUser(msg.author.id, msg.author.tag, result => {
-      msg.channel.send(makeEmbed(JSON.parse(result.shares)));
+    marketDownload(result => {
+      msg.channel.send(
+        makeEmbed(
+          result.filter(v => v.ownerID === msg.author.id && v.forSale === 0)
+        )
+      );
     });
   }
 

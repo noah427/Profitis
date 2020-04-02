@@ -13,23 +13,24 @@ db.serialize(function() {
   // Create user worth table
 
   db.run(
-    "CREATE TABLE IF NOT EXISTS users (userID TEXT UNIQUE, userTag TEXT, balance INTEGER, shares TEXT)"
+    "CREATE TABLE IF NOT EXISTS users (userID TEXT UNIQUE, userTag TEXT, balance INTEGER)"
   );
 
   db.run(
-    "CREATE TABLE IF NOT EXISTS market (serverID TEXT, price INT, amount INT, serverName TEXT, owned INT, ownerID TEXT, ownerTag TEXT)"
+    "CREATE TABLE IF NOT EXISTS market (serverID TEXT, price INT, amount INT, serverName TEXT, forSale INT, ownerID TEXT, ownerTag TEXT)"
   );
 });
 
 const getUserDB = db.prepare("SELECT * FROM users WHERE userID = ?");
-const addUserDB = db.prepare("INSERT INTO users VALUES (?,?,?,?)");
+const addUserDB = db.prepare("INSERT INTO users VALUES (?,?,?)");
 const setUserDB = db.prepare("UPDATE users SET balance = ? WHERE userID = ?");
 const userTopDB = db.prepare("SELECT * FROM users ORDER BY balance DESC");
-const setUserSharesDB = db.prepare(
-  "UPDATE users SET shares = ? WHERE userID = ?"
-);
+
 const marketUploadDB = db.prepare("INSERT INTO market VALUES (?,?,?,?,?,?,?)");
 const marketDownloadDB = db.prepare("SELECT * FROM market");
+const marketRemoveDB = db.prepare(
+  "DELETE FROM market WHERE serverID = ? AND ownerID = ? AND forSale = ?"
+);
 
 module.exports.addUser = (ID, tag) => {
   addUserDB.run(String(ID), tag, 100, "[]");
@@ -58,21 +59,29 @@ module.exports.userBalanceSet = (id, tag, amount, cb) => {
   });
 };
 
-module.exports.addSharesToUser = (id, tag, shares, cb) => {
-  this.getUser(id, tag, res => {
-    existingShares = JSON.parse(res.shares);
-    existingShares.push(shares);
-    setUserSharesDB.run(JSON.stringify(existingShares), id);
-    this.marketUpload(shares, true, id, tag);
-    cb(existingShares);
-  });
+module.exports.addSharesToUser = (id, tag, shares) => {
+  share = shares;
+
+  console.log(share);
+
+  console.log(id, tag);
+
+  marketUploadDB.run(
+    share.serverID,
+    share.price,
+    share.amount,
+    share.serverName,
+    0,
+    id,
+    tag
+  );
 };
 
 module.exports.getUser = (id, tag, cb) => {
   getUserDB.get(id, (err, res) => {
     if (!res) {
       this.addUser(id, tag);
-      cb({ balance: 100, shares: "[]" });
+      cb({ balance: 100 });
     } else {
       cb(res);
     }
@@ -81,7 +90,7 @@ module.exports.getUser = (id, tag, cb) => {
 
 module.exports.marketUpload = (
   { serverID, price, amount, serverName },
-  owned,
+  forSale,
   ownerID,
   ownerTag
 ) => {
@@ -90,7 +99,7 @@ module.exports.marketUpload = (
     price,
     amount,
     serverName,
-    owned,
+    forSale,
     ownerID,
     ownerTag
   );
@@ -98,8 +107,11 @@ module.exports.marketUpload = (
 
 module.exports.marketDownload = cb => {
   marketDownloadDB.all((err, result) => {
-    cb(result)
+    cb(result);
   });
 };
 
-
+module.exports.marketRemove = (serverID, ownerID, forSale) => {
+  console.log(serverID, ownerID, forSale);
+  marketRemoveDB.run(serverID, ownerID, forSale);
+};
