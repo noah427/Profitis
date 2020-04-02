@@ -1,12 +1,14 @@
 const sql = require("sqlite3");
 var db = new sql.Database("./database.db");
 
-db.serialize(function() {
-  db.run(
-    "CREATE TABLE IF NOT EXISTS guilds (guildID TEXT UNIQUE, guildName TEXT, guildMemberCount INTEGER, guildValue INTEGER, guildRevenue INTEGER, guildOwnerID TEXT, guildSharesAvailable INTEGER, guildSharesOwned INTEGER, guildSharesTotal INTEGER)"
-  );
-  // Create server worth table
+// Reminder
+Share = {
+  serverID: "",
+  price: 0,
+  amount : 0
+};
 
+db.serialize(function() {
   // Create user worth table
 
   db.run(
@@ -14,33 +16,16 @@ db.serialize(function() {
   );
 });
 
-const addServerDB = db.prepare("INSERT INTO guilds VALUES (?,?,?,?,?,?,?,?,?)");
-const serverTopDB = db.prepare("SELECT * FROM guilds ORDER BY guildValue DESC");
 const getUserDB = db.prepare("SELECT * FROM users WHERE userID = ?");
 const addUserDB = db.prepare("INSERT INTO users VALUES (?,?,?,?)");
 const setUserDB = db.prepare("UPDATE users SET balance = ? WHERE userID = ?");
 const userTopDB = db.prepare("SELECT * FROM users ORDER BY balance DESC");
-
-module.exports.addServer = (id, name, memberCount, ownerID) => {
-  addServerDB.run(
-    String(id),
-    name,
-    memberCount,
-    0,
-    0,
-    String(ownerID),
-    0,
-    0,
-    0
-  );
-};
-
-module.exports.serverTop = cb => {
-  serverTopDB.all(list => cb(list));
-};
+const setUserSharesDB = db.prepare(
+  "UPDATE users SET shares = ? WHERE userID = ?"
+);
 
 module.exports.addUser = (ID, tag) => {
-  addUserDB.run(String(ID), tag, 100, "");
+  addUserDB.run(String(ID), tag, 100, "[]");
 };
 
 module.exports.userTop = cb => {
@@ -51,9 +36,6 @@ module.exports.adminGive = (id, tag, amount, cb) => {
   this.getUser(id, tag, res => {
     const currentBalance = res.balance;
     const newBalance = currentBalance + amount;
-
-
-
 
     setUserDB.run(newBalance, id);
 
@@ -69,11 +51,20 @@ module.exports.userBalanceSet = (id, tag, amount, cb) => {
   });
 };
 
+module.exports.addSharesToUser = (id, tag, shares, cb) => {
+  this.getUser(id, tag, res => {
+    existingShares = JSON.parse(res.shares);
+    existingShares.push(shares);
+    setUserSharesDB.run(JSON.stringify(existingShares), id);
+    cb(existingShares);
+  });
+};
+
 module.exports.getUser = (id, tag, cb) => {
   getUserDB.get(id, (err, res) => {
     if (!res) {
       this.addUser(id, tag);
-      cb({ balance: 100 });
+      cb({ balance: 100, shares: "[]" });
     } else {
       cb(res);
     }
