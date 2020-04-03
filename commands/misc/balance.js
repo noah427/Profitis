@@ -12,7 +12,7 @@ module.exports = class extends Command {
       permLevel: 0,
       botPerms: [],
       requiredSettings: [],
-      description: "Command to check the balance of someone",
+      description: "Usage: $bal <user mention|user ID>",
       quotedStringSupport: false,
       usage: "[target:user]",
       usageDelim: " ",

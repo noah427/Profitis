@@ -12,18 +12,24 @@ module.exports = class extends Command {
       permLevel: 0,
       botPerms: [],
       requiredSettings: [],
-      description: "admin set command",
+      description: "",
       quotedStringSupport: false,
       usage: "<target:user> <amount:int>",
       usageDelim: " ",
-      extendedHelp: "Admin set command, only usable by admins"
+      extendedHelp: ""
     });
   }
 
   async run(msg, [target, amount]) {
+    
     if(msg.author.id != 628298193922424857 && msg.author.id != 414602371621060629) {
       msg.channel.send("you aren't a bot admin are you? sorry")
       return
+    }
+
+    if (isNaN(Number(amount)) || amount < 1) {
+      msg.channel.send("Illegal move");
+      return;
     }
 
     userBalanceSet(

@@ -33,7 +33,7 @@ const marketRemoveDB = db.prepare(
 );
 
 module.exports.addUser = (ID, tag) => {
-  addUserDB.run(String(ID), tag, 100, "[]");
+  addUserDB.run(String(ID), tag, 100);
 };
 
 module.exports.userTop = cb => {
@@ -59,7 +59,7 @@ module.exports.userBalanceSet = (id, tag, amount, cb) => {
   });
 };
 
-module.exports.addSharesToUser = (id, tag, shares) => {
+module.exports.addSharesToUser = (id, tag, shares, forSale) => {
   share = shares;
 
   console.log(share);
@@ -71,7 +71,7 @@ module.exports.addSharesToUser = (id, tag, shares) => {
     share.price,
     share.amount,
     share.serverName,
-    0,
+    forSale,
     id,
     tag
   );
@@ -86,6 +86,7 @@ module.exports.getUser = (id, tag, cb) => {
       cb(res);
     }
   });
+  console.log("CRASH B$ HERE")
 };
 
 module.exports.marketUpload = (

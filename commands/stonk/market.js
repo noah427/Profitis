@@ -13,7 +13,7 @@ module.exports = class extends Command {
       permLevel: 0,
       botPerms: [],
       requiredSettings: [],
-      description: "view the market for trading stocks",
+      description: "Usage: $market",
       quotedStringSupport: false,
       usage: "", // add sorting later??
       usageDelim: " ",
@@ -23,7 +23,7 @@ module.exports = class extends Command {
 
   async run(msg) {
     marketDownload(res => {
-      msg.channel.send(makeViewEmbed(res));
+      msg.channel.send(makeViewEmbed(res.filter(v => v.forSale === 1)));
     });
   }
 
@@ -43,16 +43,14 @@ function makeViewEmbed(list) {
     // console.log(row);
     embed.addField(
       `${row.amount} shares of ${row.serverName} ${
-        row.forSale
+        row.forSale === 0
           ? "owned by " + row.ownerTag
           : "for sale from " + row.ownerTag
       }`,
       `Market price : ${row.price}`
     );
 
-    console.log(row)
-
-    row.owned ? undefined : forSale++;
+    row.forSale === 0 ? undefined : forSale++;
   }
 
   embed.setFooter(`${forSale} stocks for sale`);

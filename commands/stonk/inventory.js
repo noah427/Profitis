@@ -13,7 +13,7 @@ module.exports = class extends Command {
       permLevel: 0,
       botPerms: [],
       requiredSettings: [],
-      description: "view your inventory of stocks",
+      description: "Usage: $inv",
       quotedStringSupport: false,
       usage: "", // add sorting later??
       usageDelim: " ",

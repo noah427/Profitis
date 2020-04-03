@@ -13,20 +13,18 @@ module.exports = class extends Command {
       permLevel: 0,
       botPerms: [],
       requiredSettings: [],
-      description: "type = either servers or users",
+      description: "Usage: $lb <server|user>",
       quotedStringSupport: false,
-      usage: "<type:string>",
+      usage: "",
       usageDelim: undefined,
-      extendedHelp: ""
+      extendedHelp: "It shows how far behind you are"
     });
   }
 
   async run(msg, [type]) {
-    if (type.toLowerCase() === "users" || type.toLowerCase() === "user") {
-      userTop(list => {
-        msg.channel.send(embedMakerUser(list));
-      });
-    }
+    userTop(list => {
+      msg.channel.send(embedMakerUser(list));
+    });
   }
 
   async init() {

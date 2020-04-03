@@ -1,6 +1,5 @@
 const { Command } = require("klasa");
 const {
-  getUser,
   addSharesToUser,
   marketDownload
 } = require("../../Database/index");
@@ -16,7 +15,7 @@ module.exports = class extends Command {
       permLevel: 0,
       botPerms: [],
       requiredSettings: [],
-      description: "opt your server into the game",
+      description: "Usage: $optin",
       quotedStringSupport: false,
       usage: "",
       usageDelim: " ",
@@ -47,7 +46,7 @@ module.exports = class extends Command {
         price: 2,
         amount: 100,
         serverName: msg.guild.name
-      });
+      }, 0);
 
       msg.channel.send(
         "You have opted your server into the game, try the $inventory command to see your stocks"

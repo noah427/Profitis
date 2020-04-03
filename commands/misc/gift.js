@@ -12,11 +12,11 @@ module.exports = class extends Command {
       permLevel: 0,
       botPerms: [],
       requiredSettings: [],
-      description: "gift",
+      description: "Usage: $gift <user mention|user id> <amount>",
       quotedStringSupport: false,
       usage: "<target:user> <amount:int>",
       usageDelim: " ",
-      extendedHelp: "give ur money away"
+      extendedHelp: "give ur money to bernie"
     });
   }
 

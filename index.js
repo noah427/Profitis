@@ -9,6 +9,8 @@ var Klient = new Client({
   prefix: "$",
   cmdEditing: true,
   typing: true,
+  readyMessage: "The bot has started",
+  ownerID: "628298193922424857"
 })
 
 

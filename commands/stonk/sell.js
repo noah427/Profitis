@@ -1,5 +1,11 @@
 const { Command } = require("klasa");
-const { marketDownload, marketRemove, marketUpload } = require("../../Database/index");
+const {
+  marketDownload,
+  marketRemove,
+  marketUpload,
+  userBalanceSet,
+  getUser
+} = require("../../Database/index");
 
 module.exports = class extends Command {
   constructor(...args) {
@@ -12,24 +18,34 @@ module.exports = class extends Command {
       permLevel: 0,
       botPerms: [],
       requiredSettings: [],
-      description: "sell one of your stocks",
+      description: "Usage: $sell <server name> <amount>",
       quotedStringSupport: false,
-      usage: "[serverName:string] [amount:int]", // add sorting later??
+      usage: "[serverName:string] [amount:int]", // add sorting later?? No.
       usageDelim: " ",
-      extendedHelp: ""
+      extendedHelp: "What more help do you need?"
     });
   }
 
   async run(msg, [serverName, amount]) {
-    marketDownload( result => {
-      const rows = result.filter(v => v.ownerID === msg.author.id)
+    if (isNaN(Number(amount)) || amount < 1) {
+      msg.channel.send("Illegal move");
+      return;
+    }
+
+    marketDownload(result => {
+      const rows = result.filter(v => v.ownerID === msg.author.id);
       if (rows.length == 0) {
         msg.channel.send("You need to have stocks to sell stocks");
         return;
       }
 
-      for (var row of rows) {
+      for (var row of result) {
         if (row.serverName === serverName) {
+          if (row.amount - amount < 1) {
+            msg.channel.send("You don't own enough of that stock");
+            return;
+          }
+
           marketRemove(row.serverID, msg.author.id, 0);
           marketUpload(
             {
@@ -38,23 +54,32 @@ module.exports = class extends Command {
               serverName: row.serverName,
               amount: amount
             },
+            1,
+            msg.author.id,
+            msg.author.tag
+          );
+
+          marketUpload(
+            {
+              serverID: row.serverID,
+              price: row.price,
+              serverName: row.serverName,
+              amount: row.amount - amount
+            },
             0,
             msg.author.id,
             msg.author.tag
           );
-          if (row.amount - amount > 0) {
-            marketUpload(
-              {
-                serverID: row.serverID,
-                price: row.price,
-                serverName: row.serverName,
-                amount: row.amount - amount
-              },
-              1,
-              msg.author.id,
-              msg.author.tag
+
+          getUser(msg.author.id, msg.author.tag, result => {
+            userBalanceSet(
+              result.userID,
+              result.userTag,
+              result.balance + amount * row.price,
+              () => {}
             );
-          }
+          });
+
           msg.channel.send(
             `You have successfully sold ${amount} stock in ${serverName}`
           );
