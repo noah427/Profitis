@@ -6,10 +6,10 @@ Share = {
   serverID: "",
   price: 0,
   amount: 0,
-  serverName: ""
+  serverName: "",
 };
 
-db.serialize(function() {
+db.serialize(function () {
   // Create user worth table
 
   db.run(
@@ -26,6 +26,10 @@ const addUserDB = db.prepare("INSERT INTO users VALUES (?,?,?)");
 const setUserDB = db.prepare("UPDATE users SET balance = ? WHERE userID = ?");
 const userTopDB = db.prepare("SELECT * FROM users ORDER BY balance DESC");
 
+const marketChangeAmount = db.prepare(
+  "UPDATE market SET amount = amount + ? WHERE serverID = ? AND ownerID = ? AND forSale = ?"
+);
+
 const marketUploadDB = db.prepare("INSERT INTO market VALUES (?,?,?,?,?,?,?)");
 const marketDownloadDB = db.prepare("SELECT * FROM market");
 const marketRemoveDB = db.prepare(
@@ -36,12 +40,12 @@ module.exports.addUser = (ID, tag) => {
   addUserDB.run(String(ID), tag, 100);
 };
 
-module.exports.userTop = cb => {
+module.exports.userTop = (cb) => {
   userTopDB.all((err, list) => cb(list));
 };
 
 module.exports.adminGive = (id, tag, amount, cb) => {
-  this.getUser(id, tag, res => {
+  this.getUser(id, tag, (res) => {
     const currentBalance = res.balance;
     const newBalance = currentBalance + amount;
 
@@ -52,7 +56,7 @@ module.exports.adminGive = (id, tag, amount, cb) => {
 };
 
 module.exports.userBalanceSet = (id, tag, amount, cb) => {
-  this.getUser(id, tag, res => {
+  this.getUser(id, tag, (res) => {
     setUserDB.run(amount, id);
 
     cb(amount);
@@ -77,6 +81,10 @@ module.exports.addSharesToUser = (id, tag, shares, forSale) => {
   );
 };
 
+module.exports.marketChangeAmount = (modifier, serverID, ownerID, forSale) => {
+  marketChangeAmount.run(modifier, serverID, ownerID, forSale);
+};
+
 module.exports.getUser = (id, tag, cb) => {
   getUserDB.get(id, (err, res) => {
     if (!res) {
@@ -86,7 +94,7 @@ module.exports.getUser = (id, tag, cb) => {
       cb(res);
     }
   });
-  console.log("CRASH B$ HERE")
+  console.log("CRASH B$ HERE");
 };
 
 module.exports.marketUpload = (
@@ -106,7 +114,7 @@ module.exports.marketUpload = (
   );
 };
 
-module.exports.marketDownload = cb => {
+module.exports.marketDownload = (cb) => {
   marketDownloadDB.all((err, result) => {
     cb(result);
   });

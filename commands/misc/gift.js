@@ -5,7 +5,7 @@ module.exports = class extends Command {
   constructor(...args) {
     super(...args, {
       name: "gift",
-      enabled: true,
+      enabled: false,
       runIn: ["text", "dm", "group"],
       cooldown: 0,
       aliases: [],
@@ -16,7 +16,7 @@ module.exports = class extends Command {
       quotedStringSupport: false,
       usage: "<target:user> <amount:int>",
       usageDelim: " ",
-      extendedHelp: "give ur money to bernie"
+      extendedHelp: "give ur money to bernie",
     });
   }
 
@@ -25,12 +25,12 @@ module.exports = class extends Command {
       target.id,
       target.username + "#" + target.discriminator,
       amount,
-      newBal => {
+      (newBal) => {
         msg.channel.send(`${target.username}'s new balance is : ${newBal}`);
       }
     );
 
-    adminGive(msg.author.id, msg.author.tag, -amount, newBal => {
+    adminGive(msg.author.id, msg.author.tag, -amount, (newBal) => {
       msg.channel.send(`Your new balance is : ${newBal}`);
     });
   }

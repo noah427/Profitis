@@ -13,7 +13,7 @@ module.exports = class extends Command {
       permLevel: 0,
       botPerms: [],
       requiredSettings: [],
-      description: "Usage: $lb <server|user>",
+      description: "Usage: $lb [.....] ",
       quotedStringSupport: false,
       usage: "",
       usageDelim: undefined,
