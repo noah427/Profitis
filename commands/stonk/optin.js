@@ -1,8 +1,5 @@
 const { Command } = require("klasa");
-const {
-  addSharesToUser,
-  marketDownload
-} = require("../../Database/index");
+const { addSharesToUser, marketDownload } = require("../../Database/index");
 
 module.exports = class extends Command {
   constructor(...args) {
@@ -19,7 +16,7 @@ module.exports = class extends Command {
       quotedStringSupport: false,
       usage: "",
       usageDelim: " ",
-      extendedHelp: "opt your server into the game"
+      extendedHelp: "opt your server into the game",
     });
   }
 
@@ -30,7 +27,7 @@ module.exports = class extends Command {
       );
       return;
     }
-    marketDownload(result => {
+    marketDownload((result) => {
       for (var row of result) {
         if (
           row.serverName === msg.guild.name &&
@@ -41,12 +38,17 @@ module.exports = class extends Command {
         }
       }
 
-      addSharesToUser(msg.author.id, msg.author.tag, {
-        serverID: msg.guild.id,
-        price: 2,
-        amount: 100,
-        serverName: msg.guild.name
-      }, 0);
+      addSharesToUser(
+        msg.author.id,
+        msg.author.tag,
+        {
+          serverID: msg.guild.id,
+          price: msg.guild.memberCount / 10,
+          amount: 100,
+          serverName: msg.guild.name,
+        },
+        0
+      );
 
       msg.channel.send(
         "You have opted your server into the game, try the $inventory command to see your stocks"

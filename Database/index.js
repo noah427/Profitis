@@ -30,6 +30,10 @@ const marketChangeAmount = db.prepare(
   "UPDATE market SET amount = amount + ? WHERE serverID = ? AND ownerID = ? AND forSale = ?"
 );
 
+const marketChangePrice = db.prepare(
+  "UPDATE market SET price = ? WHERE serverID = ?"
+);
+
 const marketUploadDB = db.prepare("INSERT INTO market VALUES (?,?,?,?,?,?,?)");
 const marketDownloadDB = db.prepare("SELECT * FROM market");
 const marketRemoveDB = db.prepare(
@@ -66,10 +70,6 @@ module.exports.userBalanceSet = (id, tag, amount, cb) => {
 module.exports.addSharesToUser = (id, tag, shares, forSale) => {
   share = shares;
 
-  console.log(share);
-
-  console.log(id, tag);
-
   marketUploadDB.run(
     share.serverID,
     share.price,
@@ -85,6 +85,10 @@ module.exports.marketChangeAmount = (modifier, serverID, ownerID, forSale) => {
   marketChangeAmount.run(modifier, serverID, ownerID, forSale);
 };
 
+module.exports.marketChangePrice = (price, serverID) => {
+  marketChangePrice.run(price, serverID);
+};
+
 module.exports.getUser = (id, tag, cb) => {
   getUserDB.get(id, (err, res) => {
     if (!res) {
@@ -94,7 +98,6 @@ module.exports.getUser = (id, tag, cb) => {
       cb(res);
     }
   });
-  console.log("CRASH B$ HERE");
 };
 
 module.exports.marketUpload = (
@@ -121,6 +124,5 @@ module.exports.marketDownload = (cb) => {
 };
 
 module.exports.marketRemove = (serverID, ownerID, forSale) => {
-  console.log(serverID, ownerID, forSale);
   marketRemoveDB.run(serverID, ownerID, forSale);
 };

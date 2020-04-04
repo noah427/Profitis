@@ -1,6 +1,6 @@
 const { Command } = require("klasa");
 const { MessageEmbed } = require("discord.js");
-const { serverTop, userTop } = require("../../Database/index");
+const { userTop } = require("../../Database/index");
 
 module.exports = class extends Command {
   constructor(...args) {

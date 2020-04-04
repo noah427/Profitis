@@ -40,7 +40,6 @@ function makeViewEmbed(list) {
   var forSale = 0;
 
   for (row of list) {
-    // console.log(row);
     embed.addField(
       `${row.amount} shares of ${row.serverName} ${
         row.forSale === 0
