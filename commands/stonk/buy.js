@@ -19,10 +19,10 @@ module.exports = class extends Command {
       permLevel: 0,
       botPerms: [],
       requiredSettings: [],
-      description: "Usage: $buy <server name> <amount>",
+      description: "Usage: $buy <server name>::<amount>   (note: yout must include the ::)",
       quotedStringSupport: false,
-      usage: "[serverName:string] [amount:int]",
-      usageDelim: " ",
+      usage: "<serverName:string> <amount:int>",
+      usageDelim: "::",
       extendedHelp:
         "If your server name be have space then no work (the head dev wrote this. he big dumb)",
     });

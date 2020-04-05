@@ -4,7 +4,7 @@ const {
   marketRemove,
   marketUpload,
   userBalanceSet,
-  getUser
+  getUser,
 } = require("../../Database/index");
 
 module.exports = class extends Command {
@@ -18,11 +18,11 @@ module.exports = class extends Command {
       permLevel: 0,
       botPerms: [],
       requiredSettings: [],
-      description: "Usage: $sell <server name> <amount>",
+      description: "Usage: $sell <server name>::<amount>   (note: yout must include the ::)",
       quotedStringSupport: false,
-      usage: "[serverName:string] [amount:int]", // add sorting later?? No.
-      usageDelim: " ",
-      extendedHelp: "What more help do you need?"
+      usage: "<serverName:string> <amount:int>", // add sorting later?? No.
+      usageDelim: "::",
+      extendedHelp: "What more help do you need?",
     });
   }
 
@@ -32,8 +32,8 @@ module.exports = class extends Command {
       return;
     }
 
-    marketDownload(result => {
-      const rows = result.filter(v => v.ownerID === msg.author.id);
+    marketDownload((result) => {
+      const rows = result.filter((v) => v.ownerID === msg.author.id);
       if (rows.length == 0) {
         msg.channel.send("You need to have stocks to sell stocks");
         return;
@@ -52,7 +52,7 @@ module.exports = class extends Command {
               serverID: row.serverID,
               price: row.price,
               serverName: row.serverName,
-              amount: amount
+              amount: amount,
             },
             1,
             msg.author.id,
@@ -64,14 +64,14 @@ module.exports = class extends Command {
               serverID: row.serverID,
               price: row.price,
               serverName: row.serverName,
-              amount: row.amount - amount
+              amount: row.amount - amount,
             },
             0,
             msg.author.id,
             msg.author.tag
           );
 
-          getUser(msg.author.id, msg.author.tag, result => {
+          getUser(msg.author.id, msg.author.tag, (result) => {
             userBalanceSet(
               result.userID,
               result.userTag,
