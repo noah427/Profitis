@@ -78,11 +78,35 @@ module.exports = class extends Command {
 
           // buy conditions
 
-          if (offer.amount > amount || offer.amount < amount) {
-            msg.channel.send(
-              "You currently must buy the exact amount listed on the market (will be updated soon)"
+          if (offer.amount > amount) {
+            if (buyer.balance - amount * offer.price < 0) {
+              msg.channel.send("You're too poor, sorry");
+              return;
+            }
+
+            marketChangeAmount(
+              -amount,
+              offer.serverID,
+              offer.ownerID,
+              offer.forSale
             );
-            return;
+
+            sellers.push(offer.ownerTag);
+
+            spent = amount * offer.price;
+
+            // I already forgot what this does why didn't I add comments
+
+            marketChangeAmount(amount, offer.serverID, msg.author.id, 0);
+
+            getUser(msg.author.id, msg.author.tag, (result) => {
+              userBalanceSet(
+                msg.author.id,
+                msg.author.tag,
+                result.balance - amount * offer.price,
+                () => {}
+              );
+            });
           }
         }
 

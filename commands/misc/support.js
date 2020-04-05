@@ -13,14 +13,16 @@ module.exports = class extends Command {
       requiredSettings: [],
       description: "Sends a link to the support server",
       quotedStringSupport: false,
-      usage: "[target:user]",
+      usage: "",
       usageDelim: " ",
       extendedHelp: "",
     });
   }
 
   async run(msg) {
-
+    msg.channel.send(
+      "Join the support server to get help or give feedback : https://discord.gg/HJ7uHBp"
+    );
   }
 
   async init() {
