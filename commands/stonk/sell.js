@@ -22,7 +22,7 @@ module.exports = class extends Command {
       quotedStringSupport: false,
       usage: "<serverName:string> <amount:int>", // add sorting later?? No.
       usageDelim: "::",
-      extendedHelp: "What more help do you need?",
+      extendedHelp: "don't forget the ::",
     });
   }
 

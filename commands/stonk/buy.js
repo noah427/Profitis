@@ -19,12 +19,12 @@ module.exports = class extends Command {
       permLevel: 0,
       botPerms: [],
       requiredSettings: [],
-      description: "Usage: $buy <server name>::<amount>   (note: yout must include the ::)",
+      description:
+        "Usage: $buy <server name>::<amount>   (note: yout must include the ::)",
       quotedStringSupport: false,
       usage: "<serverName:string> <amount:int>",
       usageDelim: "::",
-      extendedHelp:
-        "If your server name be have space then no work (the head dev wrote this. he big dumb)",
+      extendedHelp: "don't forget the ::",
     });
   }
 
@@ -79,7 +79,9 @@ module.exports = class extends Command {
           // buy conditions
 
           if (offer.amount > amount || offer.amount < amount) {
-            msg.channel.send("You cannot buy stock in that server currently");
+            msg.channel.send(
+              "You currently must buy the exact amount listed on the market (will be updated soon)"
+            );
             return;
           }
         }
