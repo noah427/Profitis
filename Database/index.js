@@ -40,6 +40,24 @@ const marketRemoveDB = db.prepare(
   "DELETE FROM market WHERE serverID = ? AND ownerID = ? AND forSale = ?"
 );
 
+const removeUserDB = db.prepare(
+  "DELETE FROM users WHERE userID = ? AND userTag = ?"
+);
+
+const changeStockOwnerDB = db.prepare(
+  "UPDATE market SET ownerID = ?, ownerTag = ? WHERE serverID = ? AND ownerID = ? AND forSale = ?"
+);
+
+module.exports.changeStockOwner = (
+  newOwnerID,
+  newOwnerTag,
+  serverID,
+  oldOwnerID,
+  forSale
+) => {
+  changeStockOwnerDB.run(newOwnerID, newOwnerID, serverID, ownerID, forSale)
+};
+
 module.exports.addUser = (ID, tag) => {
   addUserDB.run(String(ID), tag, 100);
 };
@@ -125,4 +143,8 @@ module.exports.marketDownload = (cb) => {
 
 module.exports.marketRemove = (serverID, ownerID, forSale) => {
   marketRemoveDB.run(serverID, ownerID, forSale);
+};
+
+module.exports.removeUser = (userID, userTag) => {
+  removeUserDB.run(userID, userTag);
 };

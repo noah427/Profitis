@@ -62,7 +62,30 @@ module.exports = class extends Command {
 
             spent = amount * offer.price;
 
-            // I already forgot what this does why didn't I add comments
+            // possibly not checking user has that stock
+
+            // check that user owns a little of that stock to begin with
+
+            // this could be ten times shorter if I wanted it to be
+
+            result.forEach((r, i, a) => {
+              console.log(i + 1, a.length);
+              if (i + 1 === a.length) {
+                marketUpload(
+                  {
+                    serverID: offer.serverID,
+                    price: offer.price,
+                    amount: 0,
+                    serverName: offer.serverName,
+                  },
+                  0,
+                  msg.author.id,
+                  msg.author.tag
+                );
+              }
+            });
+
+            // add to stock amount in user inv
 
             marketChangeAmount(amount, offer.serverID, msg.author.id, 0);
 
@@ -94,6 +117,25 @@ module.exports = class extends Command {
             sellers.push(offer.ownerTag);
 
             spent = amount * offer.price;
+
+            //the following codeblock fixes buying when you have none of a stock
+
+            result.forEach((r, i, a) => {
+              console.log(i + 1, a.length);
+              if (i + 1 === a.length) {
+                marketUpload(
+                  {
+                    serverID: offer.serverID,
+                    price: offer.price,
+                    amount: 0,
+                    serverName: offer.serverName,
+                  },
+                  0,
+                  msg.author.id,
+                  msg.author.tag
+                );
+              }
+            });
 
             // I already forgot what this does why didn't I add comments
 

@@ -5,6 +5,7 @@ const {
   marketUpload,
   userBalanceSet,
   getUser,
+  marketChangeAmount,
 } = require("../../Database/index");
 
 module.exports = class extends Command {
@@ -18,7 +19,8 @@ module.exports = class extends Command {
       permLevel: 0,
       botPerms: [],
       requiredSettings: [],
-      description: "Usage: $sell <server name>::<amount>   (note: yout must include the ::)",
+      description:
+        "Usage: $sell <server name>::<amount>   (note: yout must include the ::)",
       quotedStringSupport: false,
       usage: "<serverName:string> <amount:int>", // add sorting later?? No.
       usageDelim: "::",
@@ -41,12 +43,22 @@ module.exports = class extends Command {
 
       for (var row of result) {
         if (row.serverName === serverName) {
-          if (row.amount - amount < 1) {
+          if (row.amount - amount < 0) {
             msg.channel.send("You don't own enough of that stock");
             return;
           }
 
-          marketRemove(row.serverID, msg.author.id, 0);
+          // Change amount of stock user has aslong as when they sell they still have some
+          if (row.amount - amount > 0) {
+            marketChangeAmount(-amount, row.serverID, msg.author.id, 0);
+
+            console.log("left over");
+          } else {
+            // if they won't have any left over completely delete it
+            marketRemove(row.serverID, msg.author.id, 0);
+          }
+
+          // upload stock on stock market
           marketUpload(
             {
               serverID: row.serverID,
@@ -55,18 +67,6 @@ module.exports = class extends Command {
               amount: amount,
             },
             1,
-            msg.author.id,
-            msg.author.tag
-          );
-
-          marketUpload(
-            {
-              serverID: row.serverID,
-              price: row.price,
-              serverName: row.serverName,
-              amount: row.amount - amount,
-            },
-            0,
             msg.author.id,
             msg.author.tag
           );
